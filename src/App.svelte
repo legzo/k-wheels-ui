@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import type { Activity } from "./models/activity.js";
-  import AnalysisReport from "./AnalysisReport.svelte";
+  import {onMount} from "svelte";
+  import type {Activity} from "./models/activity.js";
   import ActivityDetails from "./ActivityDetails.svelte";
-  import { loading, activities, currentAnalysis } from "./store.js";
+  import {activities, loading} from "./store.js";
+  import {currentAnalysisDetails} from "./store";
+  import AnalysisGraphs from "./AnalysisGraphs.svelte";
 
   onMount(async () => {
     loading.set(true);
@@ -22,15 +23,12 @@
 </script>
 
 <header>
-  <h1>K-wheels 🚴!</h1>
+  <h1>{#if $loading}<span id="loader">🌀</span>{:else}🚴{/if} K-wheels !</h1>
 </header>
 <main>
-  {#if $loading}
-    🌀 Loading...
-  {/if}
 
-  {#if $currentAnalysis != null}
-    <AnalysisReport analysis={$currentAnalysis} />
+  {#if $currentAnalysisDetails != null}
+    <AnalysisGraphs analysis={$currentAnalysisDetails} />
   {/if}
   <div><b>Last activities :</b></div>
   <ul>
@@ -54,6 +52,20 @@
     text-transform: uppercase;
     font-size: 2.5em;
     font-weight: 100;
+  }
+
+  #loader {
+    animation-name: rotate;
+    animation-iteration-count: infinite;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    display: inline-block;
+  }
+
+  @keyframes rotate {
+    100% {
+      transform: rotate(360deg);
+    }
   }
 
   @media (min-width: 640px) {
